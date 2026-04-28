@@ -40,7 +40,7 @@ def insert_default_roles():
             conn.execute(text("""
                 INSERT INTO roles (role_name) VALUES 
                     ('buyer'),
-                    ('seller'),
+                    ('retailer'),
                     ('wholesaler'),
                     ('delivery_agent'),
                     ('admin')

@@ -51,6 +51,7 @@ class SignupOtpVerify(BaseModel):
     code: str
     full_name: str
     email: Optional[EmailStr] = None
+    requested_role: Optional[str] = None  # buyer/retailer/wholesaler (seller is treated as retailer)
 
     @field_validator("phone")
     @classmethod
@@ -74,6 +75,14 @@ class SignupOtpVerify(BaseModel):
         v = v.strip()
         if not v:
             raise ValueError("full_name is required")
+        return v
+
+    @field_validator("requested_role")
+    @classmethod
+    def normalize_role(cls, v: Optional[str]) -> Optional[str]:
+        if v is None:
+            return None
+        v = v.strip().lower()
         return v
 
 

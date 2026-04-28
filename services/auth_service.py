@@ -105,3 +105,23 @@ def ensure_default_role(db: Session, user: User, *, role_name: str) -> None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Role configuration missing")
     if role not in (user.roles or []):
         user.roles.append(role)
+
+
+ALLOWED_SIGNUP_ROLES = {"buyer", "retailer", "wholesaler"}
+
+
+def pick_signup_role(requested_role: Optional[str]) -> str:
+    """
+    Decide which role to assign during self-signup.
+
+    Prevent privilege escalation by allowing only a safe list of roles.
+    """
+    if not requested_role:
+        return "buyer"
+    r = requested_role.strip().lower()
+    # Back-compat alias: treat "seller" as "retailer" (role name is retailer).
+    if r == "seller":
+        r = "retailer"
+    if r not in ALLOWED_SIGNUP_ROLES:
+        return "buyer"
+    return r

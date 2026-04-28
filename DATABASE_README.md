@@ -36,7 +36,7 @@ This is a production-ready, scalable database design for a **Construction Materi
 
 #### `roles`
 
-- Default roles: buyer, seller, wholesaler, delivery_agent, admin
+- Default roles: buyer, retailer, wholesaler, delivery_agent, admin
 - User role assignments
 
 #### `users`

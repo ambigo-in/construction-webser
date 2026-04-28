@@ -20,7 +20,7 @@ user_roles_association = Table(
 
 
 class Role(Base):
-    """User roles: buyer, seller, delivery_agent, admin, wholesaler"""
+    """User roles: buyer, retailer, delivery_agent, admin, wholesaler"""
     __tablename__ = 'roles'
     
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)

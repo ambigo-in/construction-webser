@@ -27,6 +27,7 @@ from services.auth_service import (
     ensure_default_role,
     get_role_names,
     issue_refresh_token,
+    pick_signup_role,
     rotate_refresh_token,
     revoke_refresh_token,
 )
@@ -89,7 +90,7 @@ async def request_otp(
     )
     db.commit()
 
-    return {"status": "sent"}
+    return {"status": "sent", "is_registered": bool(existing_user)}
 
 
 @router.post("/login/otp/verify", response_model=TokenPairResponse)
@@ -106,15 +107,15 @@ def login_with_otp_verify(
         window_seconds=3600,
     )
 
-    ok = verify_otp(db, phone10=phone10, otp=payload.code)
-    if not ok:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid OTP")
-
     user = db.query(User).filter(User.phone == phone10).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not registered")
     if not user.is_active:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User is inactive")
+
+    ok = verify_otp(db, phone10=phone10, otp=payload.code)
+    if not ok:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid OTP")
     if not user.is_verified:
         user.is_verified = True
         db.commit()
@@ -163,13 +164,13 @@ def signup_with_otp_verify(
         window_seconds=3600,
     )
 
-    ok = verify_otp(db, phone10=phone10, otp=payload.code)
-    if not ok:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid OTP")
-
     existing = db.query(User).filter(User.phone == phone10).first()
     if existing:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User already registered")
+
+    ok = verify_otp(db, phone10=phone10, otp=payload.code)
+    if not ok:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid OTP")
 
     user = User(
         full_name=payload.full_name.strip(),
@@ -181,8 +182,8 @@ def signup_with_otp_verify(
     db.add(user)
     db.flush()
 
-    # Signup default role is always buyer.
-    ensure_default_role(db, user, role_name="buyer")
+    role_name = pick_signup_role(payload.requested_role)
+    ensure_default_role(db, user, role_name=role_name)
 
     db.commit()
     db.refresh(user)
