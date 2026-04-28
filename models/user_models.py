@@ -48,6 +48,7 @@ class User(Base):
     
     # Relationships
     roles = relationship('Role', secondary=user_roles_association, back_populates='users')
+    refresh_tokens = relationship('RefreshToken', back_populates='user', cascade='all, delete-orphan')
     addresses = relationship('Address', back_populates='user', cascade='all, delete-orphan')
     seller_profile = relationship('SellerProfile', back_populates='user', uselist=False)
     delivery_agent = relationship('DeliveryAgent', back_populates='user', uselist=False)

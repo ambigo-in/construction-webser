@@ -13,6 +13,7 @@ from models.delivery_models import DeliveryAgent, Delivery
 from models.notification_models import Notification
 from models.review_models import Review
 from models.audit_models import AuditLog
+from models.auth_models import RefreshToken, OtpCode
 
 __all__ = [
     # User & Auth
@@ -59,4 +60,8 @@ __all__ = [
     
     # Audit
     'AuditLog',
+
+    # Auth
+    'RefreshToken',
+    'OtpCode',
 ]

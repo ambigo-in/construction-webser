@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from config import settings
 from database import get_db, init_db
+from routers.auth import router as auth_router
 from models import (
     User, Role, Address, SellerProfile,
     Category, Brand, MasterProduct, SellerProduct, ProductImage,
@@ -28,6 +29,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# API routers
+app.include_router(auth_router)
 
 
 @app.get("/")

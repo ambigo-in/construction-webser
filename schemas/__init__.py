@@ -23,6 +23,12 @@ from schemas.transaction_schemas import (
     DeliveryCreate, DeliveryUpdate, DeliveryResponse,
     ReviewCreate, ReviewResponse
 )
+from schemas.auth_schemas import (
+    OtpRequest,
+    LoginOtpVerify, SignupOtpVerify,
+    TokenPairResponse,
+    RefreshRequest, LogoutRequest
+)
 
 __all__ = [
     # Users & Roles
@@ -54,4 +60,10 @@ __all__ = [
     'DeliveryAgentCreate', 'DeliveryAgentResponse',
     'DeliveryCreate', 'DeliveryUpdate', 'DeliveryResponse',
     'ReviewCreate', 'ReviewResponse',
+
+    # Auth
+    'OtpRequest',
+    'LoginOtpVerify', 'SignupOtpVerify',
+    'TokenPairResponse',
+    'RefreshRequest', 'LogoutRequest',
 ]
