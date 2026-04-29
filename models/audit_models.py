@@ -20,7 +20,9 @@ class AuditLog(Base):
     entity_type = Column(String(100), nullable=True)  # 'order', 'payment', 'seller', 'user'
     entity_id = Column(UUID(as_uuid=True), nullable=True, index=True)
     
-    metadata = Column(JSONB, nullable=True)  # Additional context
+    # "metadata" is reserved on SQLAlchemy Declarative models, so use a different
+    # Python attribute name but keep the database column name as "metadata".
+    meta = Column("metadata", JSONB, nullable=True)  # Additional context
     
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)
     

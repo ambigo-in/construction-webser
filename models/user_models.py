@@ -20,7 +20,7 @@ user_roles_association = Table(
 
 
 class Role(Base):
-    """User roles: buyer, seller, delivery_agent, admin, wholesaler"""
+    """User roles: buyer, retailer, delivery_agent, admin, wholesaler"""
     __tablename__ = 'roles'
     
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -48,6 +48,7 @@ class User(Base):
     
     # Relationships
     roles = relationship('Role', secondary=user_roles_association, back_populates='users')
+    refresh_tokens = relationship('RefreshToken', back_populates='user', cascade='all, delete-orphan')
     addresses = relationship('Address', back_populates='user', cascade='all, delete-orphan')
     seller_profile = relationship('SellerProfile', back_populates='user', uselist=False)
     delivery_agent = relationship('DeliveryAgent', back_populates='user', uselist=False)

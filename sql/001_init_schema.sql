@@ -45,6 +45,47 @@ CREATE TABLE IF NOT EXISTS user_roles (
 );
 
 -- ============================================
+-- 3b. REFRESH TOKENS TABLE (rotating refresh tokens)
+-- ============================================
+CREATE TABLE IF NOT EXISTS refresh_tokens (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL,
+    token_hash VARCHAR(64) UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP NOT NULL,
+    revoked_at TIMESTAMP,
+    replaced_by_token_id UUID,
+    created_ip VARCHAR(64),
+    user_agent VARCHAR(255),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_refresh_tokens_user_id ON refresh_tokens(user_id);
+CREATE INDEX idx_refresh_tokens_expires_at ON refresh_tokens(expires_at);
+CREATE INDEX idx_refresh_tokens_revoked_at ON refresh_tokens(revoked_at);
+
+-- ============================================
+-- 3c. OTP CODES TABLE (server-generated OTP)
+-- ============================================
+CREATE TABLE IF NOT EXISTS otp_codes (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    phone VARCHAR(20) NOT NULL,
+    purpose VARCHAR(50) NOT NULL DEFAULT 'login',
+    code_hash VARCHAR(64) NOT NULL,
+    attempts INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP NOT NULL,
+    consumed_at TIMESTAMP,
+    created_ip VARCHAR(64),
+    user_agent VARCHAR(255)
+);
+
+CREATE INDEX idx_otp_codes_phone ON otp_codes(phone);
+CREATE INDEX idx_otp_codes_expires_at ON otp_codes(expires_at);
+CREATE INDEX idx_otp_codes_consumed_at ON otp_codes(consumed_at);
+CREATE INDEX idx_otp_codes_phone_expires ON otp_codes(phone, expires_at);
+
+-- ============================================
 -- 4. ADDRESSES TABLE
 -- ============================================
 CREATE TABLE IF NOT EXISTS addresses (
@@ -387,7 +428,7 @@ CREATE INDEX idx_audit_logs_created_at ON audit_logs(created_at);
 -- ============================================
 INSERT INTO roles (role_name) VALUES 
     ('buyer'),
-    ('seller'),
+    ('retailer'),
     ('wholesaler'),
     ('delivery_agent'),
     ('admin')

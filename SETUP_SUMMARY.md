@@ -71,7 +71,7 @@ All organized in `schemas/` folder:
 
 - Python script to initialize the database
 - Creates all tables
-- Inserts default roles (buyer, seller, wholesaler, delivery_agent, admin)
+- Inserts default roles (buyer, retailer, wholesaler, delivery_agent, admin)
 - Verifies database setup
 
 ---
