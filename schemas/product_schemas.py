@@ -22,6 +22,13 @@ class CategoryCreate(CategoryBase):
     pass
 
 
+class CategoryUpdate(BaseModel):
+    """Update category"""
+    name: Optional[str] = None
+    description: Optional[str] = None
+    parent_id: Optional[UUID] = None
+
+
 class CategoryResponse(CategoryBase):
     """Category response"""
     id: UUID
@@ -42,6 +49,13 @@ class BrandBase(BaseModel):
 class BrandCreate(BrandBase):
     """Create brand"""
     pass
+
+
+class BrandUpdate(BaseModel):
+    """Update brand"""
+    name: Optional[str] = None
+    description: Optional[str] = None
+    logo_url: Optional[str] = None
 
 
 class BrandResponse(BrandBase):
@@ -68,6 +82,18 @@ class MasterProductBase(BaseModel):
 class MasterProductCreate(MasterProductBase):
     """Create master product"""
     pass
+
+
+class MasterProductUpdate(BaseModel):
+    """Update master product"""
+    product_name: Optional[str] = None
+    category_id: Optional[UUID] = None
+    brand_id: Optional[UUID] = None
+    description: Optional[str] = None
+    base_unit: Optional[str] = None
+    weight_per_unit: Optional[Decimal] = None
+    dimensions: Optional[Dict] = None
+    is_active: Optional[bool] = None
 
 
 class MasterProductResponse(MasterProductBase):
