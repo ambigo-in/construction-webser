@@ -3,6 +3,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from config import settings
 from database import get_db, init_db
 from routers.auth import router as auth_router
+from routers.addresses import router as addresses_router
+from routers.admin import router as admin_router
+from routers.cart import router as cart_router
+from routers.orders import router as orders_router
+from routers.payments import router as payments_router
+from routers.products import router as products_router
+from routers.sellers import router as sellers_router
 from models import (
     User, Role, Address, SellerProfile,
     Category, Brand, MasterProduct, SellerProduct, ProductImage,
@@ -32,6 +39,13 @@ app.add_middleware(
 
 # API routers
 app.include_router(auth_router)
+app.include_router(admin_router)
+app.include_router(products_router)
+app.include_router(sellers_router)
+app.include_router(addresses_router)
+app.include_router(cart_router)
+app.include_router(orders_router)
+app.include_router(payments_router)
 
 
 @app.get("/")
@@ -52,19 +66,6 @@ async def health_check():
         "environment": "development",
         "database": "connected"
     }
-
-
-# ============================================
-# ROUTE PLACEHOLDERS (to be implemented)
-# ============================================
-
-# TODO: User routes
-# TODO: Product routes  
-# TODO: Cart routes
-# TODO: Order routes
-# TODO: Payment routes
-# TODO: Delivery routes
-# TODO: Review routes
 
 
 if __name__ == "__main__":
